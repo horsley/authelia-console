@@ -223,7 +223,7 @@ function userList() {
 }
 function groupsPage() {
   return (
-    toolbar() + '<div class="app-grid" id="listing">' + groupList() + "</div>"
+    toolbar() + '<div class="group-grid" id="listing">' + groupList() + "</div>"
   );
 }
 function groupList() {
@@ -234,7 +234,8 @@ function groupList() {
     gs
       .map((g) => {
         const members = state.users.filter((u) => u.groups.includes(g));
-        return `<article class="group-card"><div class="group-title"><h3>⊞　${e(g)}</h3><span class="pill neutral">${members.length} 位成员</span></div><div class="group-members">${members.map((u) => `<span class="tag">${e(u.displayname)}</span>`).join("") || '<span class="help">还没有成员</span>'}</div><div class="card-footer"><span class="small">${state.applications.filter((a) => a.subjects.includes("group:" + g)).length} 个应用直接引用</span><button class="btn ghost" data-edit-group="${attr(g)}">编辑成员 →</button></div></article>`;
+        const apps = state.applications.filter((a) => a.subjects.includes("group:" + g));
+        return `<article class="group-card"><header class="group-title"><span class="group-symbol" aria-hidden="true">⊞</span><div class="group-identity"><h3>${e(g)}</h3><p>${members.length} 位成员<span aria-hidden="true"> · </span>${apps.length} 个应用直接引用</p></div></header><div class="group-content"><section><h4 class="group-section-label">成员</h4><div class="group-members">${members.map((u) => `<span class="member-chip${u.disabled ? " disabled" : ""}" title="${attr(u.displayname)} (${attr(u.username)})"><span class="member-avatar" aria-hidden="true">${e(Array.from(u.displayname || u.username)[0].toUpperCase())}</span><span class="member-name">${e(u.displayname)}${u.displayname !== u.username ? `<small>${e(u.username)}</small>` : ""}</span>${u.disabled ? '<span class="member-status">已停用</span>' : ""}</span>`).join("") || '<p class="group-empty">还没有成员</p>'}</div></section><section><h4 class="group-section-label">应用引用</h4><div class="group-apps">${apps.map((a) => `<span class="group-app-tag" title="${attr(a.name)}">${e(a.name)}</span>`).join("") || '<p class="group-empty">暂无应用直接引用</p>'}</div></section></div><button class="btn ghost group-edit" data-edit-group="${attr(g)}" aria-label="编辑 ${attr(g)} 的成员">编辑成员 →</button></article>`;
       })
       .join("") ||
     '<div class="empty"><h3>还没有用户组</h3><p>可以直接给用户授权，也可以通过用户组批量管理。</p></div>'
