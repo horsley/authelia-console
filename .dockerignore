@@ -10,3 +10,17 @@ data
 qa*
 *.log
 source.tar.gz
+configuration.yml
+configuration.yaml
+users_database.yml
+users_database.yaml
+*.db
+*.db-*
+*.sqlite*
+*.pem
+*.key
+session-key
+oidc-admins.json
+draft.json
+history.json
+transaction.json

@@ -24,3 +24,7 @@ history.json
 transaction.json
 .DS_Store
 ._*
+configuration.yml
+configuration.yaml
+users_database.yml
+users_database.yaml
