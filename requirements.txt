@@ -1,0 +1,7 @@
+fastapi==0.162.0
+uvicorn==0.54.0
+ruamel.yaml==0.19.1
+argon2-cffi==25.1.0
+httpx==0.28.1
+Authlib==1.9.1
+itsdangerous==2.2.0

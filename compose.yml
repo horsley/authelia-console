@@ -1,0 +1,33 @@
+services:
+  console:
+    build: .
+    image: authelia-console:0.3.0
+    container_name: authelia-console
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      AUTH_MODE: ${AUTH_MODE:-oidc}
+      CONFIG_DIR: /config
+      STATE_DIR: /data
+      HOOKS_SOCKET: /agent/agent.sock
+    volumes:
+      - ${AUTHELIA_CONFIG_DIR:-/data/authelia/config}:/config
+      - ./data:/data
+      - /run/authelia-console:/agent:ro
+    ports:
+      - 127.0.0.1:8096:8096
+    networks:
+      - dokploy-network
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: [CMD, python, -c, "import os,urllib.request; r=urllib.request.Request('http://127.0.0.1:8096/healthz',headers={'Host':os.environ['PUBLIC_ORIGIN'].split('://',1)[1]}); urllib.request.urlopen(r,timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+networks:
+  dokploy-network:
+    external: true

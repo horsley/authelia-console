@@ -1,0 +1,41 @@
+services:
+  console:
+    build:
+      context: .
+    image: authelia-console:0.3.0
+    container_name: authelia-console-managed
+    restart: unless-stopped
+    environment:
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:?set PUBLIC_ORIGIN}
+      BASE_PATH: /console
+      CONFIG_DIR: /config
+      STATE_DIR: /data
+      HOOKS_SOCKET: /agent/agent.sock
+      AUTH_MODE: oidc
+      OIDC_ISSUER: ${OIDC_ISSUER:?set OIDC_ISSUER}
+      AUTHELIA_ISSUER: ${OIDC_ISSUER:?set OIDC_ISSUER}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-authelia-console}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:?set OIDC_CLIENT_SECRET}
+      OIDC_ADMIN_USERS: ${OIDC_ADMIN_USERS:?set OIDC_ADMIN_USERS}
+    volumes:
+      - ${AUTHELIA_CONFIG_DIR:-/data/authelia/config}:/config
+      - ${CONSOLE_STATE_DIR:-/opt/authelia-console/data}:/data
+      - ${AGENT_SOCKET_DIR:-/run/authelia-console}:/agent:ro
+    networks: [dokploy-network]
+    read_only: true
+    tmpfs: ['/tmp:size=32m,mode=1777']
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    labels:
+      - 'traefik.http.middlewares.console-oidc-slash.redirectregex.regex=^https?://([^/]+)/console(\?.*)?$$'
+      - 'traefik.http.middlewares.console-oidc-slash.redirectregex.replacement=https://$${1}/console/$${2}'
+      - 'traefik.http.middlewares.console-oidc-slash.redirectregex.permanent=true'
+      - 'traefik.http.middlewares.console-oidc-prefix.stripprefix.prefixes=/console'
+    healthcheck:
+      test: [CMD, python, -c, "import os,urllib.request; r=urllib.request.Request('http://127.0.0.1:8096/healthz',headers={'Host':os.environ['PUBLIC_ORIGIN'].split('://',1)[1]}); urllib.request.urlopen(r,timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+networks:
+  dokploy-network:
+    external: true

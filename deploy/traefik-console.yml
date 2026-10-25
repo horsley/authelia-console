@@ -1,0 +1,24 @@
+http:
+  routers:
+    authelia-console:
+      rule: Host(`auth.example.com`) && (Path(`/console`) || PathPrefix(`/console/`))
+      priority: 1000
+      entryPoints: [websecure]
+      tls:
+        certResolver: letsencrypt
+      middlewares: [authelia-console-slash, authelia-console-prefix]
+      service: authelia-console
+  middlewares:
+    authelia-console-slash:
+      redirectRegex:
+        regex: '^https?://([^/]+)/console(\?.*)?$'
+        replacement: 'https://${1}/console/${2}'
+        permanent: true
+    authelia-console-prefix:
+      stripPrefix:
+        prefixes: [/console]
+  services:
+    authelia-console:
+      loadBalancer:
+        servers:
+          - url: http://authelia-console:8096

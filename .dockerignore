@@ -1,0 +1,12 @@
+__pycache__
+.pytest_cache
+tests
+.git
+.env
+*.zip
+*.tar.gz
+screenshots
+data
+qa*
+*.log
+source.tar.gz

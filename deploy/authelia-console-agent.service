@@ -1,0 +1,22 @@
+[Unit]
+Description=Authelia Console restricted publication agent
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+Environment=AUTHELIA_CONTAINER=authelia
+ExecStart=/usr/bin/python3 /opt/authelia-console/deploy/agent.py
+Restart=on-failure
+RuntimeDirectory=authelia-console
+RuntimeDirectoryMode=0700
+RuntimeDirectoryPreserve=yes
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/run/authelia-console
+
+[Install]
+WantedBy=multi-user.target
