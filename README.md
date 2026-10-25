@@ -1,5 +1,7 @@
 # Authelia Console
 
+[![CI](https://github.com/horsley/authelia-console/actions/workflows/test.yml/badge.svg)](https://github.com/horsley/authelia-console/actions/workflows/test.yml)
+
 A self-hosted administration UI for Authelia file users, groups, OIDC clients, and ForwardAuth policies. Community project; not an official Authelia product.
 
 ## 功能
@@ -109,7 +111,7 @@ python -m pytest -q
 node --check app/static/app.js
 ```
 
-测试使用临时文件和合成 OIDC 提供方，包含真实签名 token、PKCE、签名/issuer/audience/nonce/state/过期拒绝、白名单、主体绑定、CSRF、配置保留及发布回滚，不需要生产凭据。
+当前测试集包含 43 项测试。测试使用临时文件和合成 OIDC 提供方，包含真实签名 token、PKCE、签名/issuer/audience/nonce/state/过期拒绝、白名单、主体绑定、CSRF、配置保留及发布回滚，不需要生产凭据。
 
 ## License
 
